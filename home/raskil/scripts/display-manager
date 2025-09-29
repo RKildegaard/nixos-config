@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Requires: wofi, jq, wlr-randr, hyprctl
+STYLE="${HOME}/.config/wofi/scale-manager.css"
+
+wofi_menu() {
+  # usage: list | wofi_menu "Prompt"
+  if [ -f "$STYLE" ]; then
+    wofi --show dmenu --allow-markup --prompt "$1" --style "$STYLE"
+  else
+    wofi --show dmenu --allow-markup --prompt "$1"
+  fi
+}
+
+# ---- Data sources ----
+outputs_json() { hyprctl -j monitors; }
+output_names()  { outputs_json | jq -r '.[].name'; }
+focused_output() { outputs_json | jq -r '.[] | select(.focused==true).name'; }
+
+# name — WxH@Hz (scale S)
+summarize_outputs() {
+  outputs_json | jq -r '.[] | "\(.name)  —  \(.width)x\(.height)@\(.refreshRate)Hz  (scale \(.scale))"'
+}
+
+# Extract available modes for an output from `wlr-randr --output NAME`
+# Normalize to 1234x1234@NN.NN (strip trailing "Hz" if present)
+list_modes_exact() {
+  local out="$1"
+  wlr-randr --output "$out" | awk '
+    BEGIN{inblk=0}
+    /^[[:space:]]*Modes:/ {inblk=1; next}
+    inblk && NF==0        {exit}
+    inblk && $1 ~ /^[0-9]+x[0-9]+@[0-9.]+(Hz)?/ {
+      mode=$1
+      sub(/Hz$/,"",mode)   # drop trailing Hz if present
+      print mode
+    }' | sort -u
+}
+
+# Pretty list with (current)/(preferred) labels
+list_modes_pretty() {
+  local out="$1"
+  wlr-randr --output "$out" | awk '
+    BEGIN{inblk=0}
+    /^[[:space:]]*Modes:/ {inblk=1; next}
+    inblk && NF==0        {exit}
+    inblk && $1 ~ /^[0-9]+x[0-9]+@[0-9.]+(Hz)?/ {
+      mode=$1
+      sub(/Hz$/,"",mode)
+      cur = (index($0,"*")>0) ? " (current)" : ""
+      pref= (index($0,"+")>0) ? " (preferred)" : ""
+      print mode cur pref
+    }'
+}
+
+set_scale() { wlr-randr --output "$1" --scale "$2"; }
+set_mode()  { wlr-randr --output "$1" --mode  "$2"; }
+
+# ---- Presets ----
+SCALES=$'1.00\n1.10\n1.15\n1.20\n1.25\n1.33\n1.50\n1.75\n2.00'
+ACTIONS=$'Set Scale\nSet Resolution'
+
+# Good fallback modes (add your favorites here)
+COMMON_MODES=$'1920x1080@60\n2560x1440@60\n2560x1440@144\n3440x1440@60\n3440x1440@100\n3440x1440@144\n3840x2160@60'
+
+# ---- UI helpers ----
+pick_output() {
+  printf "All Displays\n%s\n" "$(summarize_outputs)" | wofi_menu "Display"
+}
+pick_action() { printf "%s\n" "$ACTIONS" | wofi_menu "Action"; }
+pick_scale()  { printf "%s\n" "$SCALES"  | wofi_menu "Scale"; }
+
+pick_mode_for_output() {
+  local out="$1"
+  local pretty modes
+  pretty="$(list_modes_pretty "$out" || true)"
+  modes="$(list_modes_exact "$out"  || true)"
+
+  if [ -n "$pretty" ]; then
+    printf "%s\n" "$pretty" | wofi_menu "Mode ($out)" | awk '{print $1}'
+  else
+    # Fallback: offer common modes; they must match what the output supports
+    # If user picks a mode the output doesn’t support, wlr-randr will error.
+    printf "%s\n" "$COMMON_MODES" | wofi_menu "Common Modes ($out)"
+  fi
+}
+
+# ---- Main flow ----
+sel="$(pick_output)" || exit 0
+[ -z "$sel" ] && exit 0
+
+if [ "$sel" = "All Displays" ]; then
+  TARGETS="$(output_names)"
+else
+  TARGETS="$(printf "%s\n" "$sel" | awk -F'  —  ' '{print $1}')"
+fi
+
+act="$(pick_action)" || exit 0
+[ -z "$act" ] && exit 0
+
+case "$act" in
+  "Set Scale")
+    sc="$(pick_scale)" || exit 0
+    [ -z "$sc" ] && exit 0
+    while read -r out; do
+      [ -n "$out" ] && set_scale "$out" "$sc" || true
+    done <<< "$TARGETS"
+    ;;
+
+  "Set Resolution")
+    while read -r out; do
+      [ -z "$out" ] && continue
+      mode="$(pick_mode_for_output "$out" || true)"
+      [ -z "${mode:-}" ] && continue
+      set_mode "$out" "$mode" || {
+        # If it failed (e.g., unsupported), notify in terminal
+        echo "Failed to set $out to $mode (unsupported?)" >&2
+      }
+    done <<< "$TARGETS"
+    ;;
+
+  *) exit 0 ;;
+esac
+
