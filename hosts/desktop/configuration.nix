@@ -8,12 +8,11 @@
   networking.hostName = "desktop";
   boot.loader.grub = {
     enable = true;
-    device = "/dev/sda";  # adjust if needed
+    device = "nodev";
     useOSProber = true;
   };
-
-  # Desktop-specific (example)
+  
   services.blueman.enable = true;
-  services.power-profiles-daemon.enable = false;
+  services.tlp.enable = true; 
 }
 

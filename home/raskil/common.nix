@@ -19,6 +19,7 @@
     # Wayland session apps
     foot
     wofi waybar hyprpaper mako cliphist
+    polkit_gnome
 
     # Tray apps & helpers started in Hyprland exec-once
     networkmanagerapplet
@@ -76,8 +77,7 @@
       };
       docked = {
         outputs = [
-          { criteria = "HDMI-A-1"; mode = "2560x1440@144Hz"; position = "0,0"; scale = 1.0; }
-          { criteria = "eDP-1";    status = "disable"; }
+          { criteria = "eDP-1"; mode = "3840x2400@60Hz"; position = "0,0"; scale = 1.5; }
         ];
       };
     };

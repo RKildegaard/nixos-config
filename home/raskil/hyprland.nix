@@ -2,6 +2,7 @@
 {
   wayland.windowManager.hyprland = {
     enable = true;
+    systemd.enable = true;
     settings = {
       monitor = ",preferred,auto,1";
       env = [
@@ -13,14 +14,14 @@
 
 
       exec-once = [
-        "/run/current-system/sw/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+	"${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "nm-applet"
         "blueman-applet"
         "udiskie --tray"
         "mako"
         "hyprpaper"
         "wl-paste --watch cliphist store"
-        "waybar"
+        # "waybar"
         # "way-displays --tray"
       ];
 
@@ -33,7 +34,7 @@
         sensitivity = 0.0;
 
         touchpad = {
-          natural_scroll = false;
+          natural_scroll = true;
           "tap-to-click" = true;
           disable_while_typing = true;
         };
@@ -105,6 +106,7 @@
   };
 
   programs.waybar.enable = true;
+  programs.waybar.systemd.enable = true;
   programs.foot.enable = true;
   programs.rofi.enable = false;
 }

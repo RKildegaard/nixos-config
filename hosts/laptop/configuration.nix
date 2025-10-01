@@ -7,14 +7,19 @@
 
   networking.hostName = "laptop";
   boot.loader.grub = {
-    enable = true;
-    device = "/dev/sda";  # adjust if needed
-    useOSProber = true;
+    	enable = true;
+    	device = "nodev";
+	efiSupport = true;
   };
-
-  # Laptop-specific QoL
+ 
+  boot.loader.efi = {
+	canTouchEfiVariables = true;
+	efiSysMountPoint = "/boot/efi";
+  };  
+ 
   services.blueman.enable = true;
+  services.tlp.enable = false;
   services.power-profiles-daemon.enable = true;
-  services.tlp.enable = true;  # power saving
+  services.upower.enable = true;
 }
 

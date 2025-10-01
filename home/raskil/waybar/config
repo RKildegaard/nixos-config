@@ -6,27 +6,27 @@
   "margin-left": 10,
   "margin-right": 10,
   "fixed-center": true,
+  "output" : ["eDP-1"],
 
   "modules-left": [
     "hyprland/workspaces"
   ],
   "modules-center": [
-    "clock",
+    "custom/clock",
     "mpris"
   ],
   "modules-right": [
     "custom/dnd",
     "custom/mic",
     "custom/cam",
-    //"bluetooth",
     "backlight",
     "cpu",
     "memory",
     "temperature",
-    "network",
+    "tray",
     "custom/vpn",
     "battery",
-    "tray",
+    "power-profiles-daemon",
     "pulseaudio",
     "custom/power"
   ],
@@ -39,16 +39,17 @@
     "active-only": false,
     "format-icons": {
       "default": "",
-      "active":  "",
-      "urgent":  ""
+      "active": "",
+      "urgent": ""
     }
   },
 
-  "clock": {
-    "format": "  {:%a %d %b  %H:%M}",
+  "custom/clock": {
+    "format": "  {}",
+    "exec": "date '+%a %d %b  %H:%M'",
+    "interval": 5,
     "tooltip": true,
-    "tooltip-format": "{:%A, %d %B %Y}\n{:%H:%M:%S}",
-    "on-click": "gsimplecal"
+    "tooltip-format": "{}"
   },
 
   "mpris": {
@@ -63,35 +64,20 @@
     "tooltip-format": "{player} — {artist} — {title}"
   },
 
-  "tray": { "icon-size": 16, "spacing": 8 },
-
   "pulseaudio": {
-  "format": "{icon} {volume}%",
-  "format-muted": "󰝟  muted",
-  "format-icons": { "default": ["","",""] },
-  "scroll-step": 5,
-  "on-click": "pavucontrol",
-  "tooltip": true,
-  "tooltip-format": "{desc}\nVolume: {volume}%"
-},
-
-
-  "network": {
-    "format-wifi": "  {essid} {signalStrength}%",
-    "format-ethernet": "󰈁  {ifname}",
-    "format-disconnected": "  offline",
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 muted",
+    "format-icons": { "default": ["","",""] },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
     "tooltip": true,
-    "tooltip-format": "{ifname}  |  IPv4: {ipaddr}  |  Up: {bandwidthUpBits}  |  Down: {bandwidthDownBits}",
-    "on-click": "nm-connection-editor"
+    "tooltip-format": "{desc}\nVolume: {volume}%"
   },
 
-//  "bluetooth": {
-//    "format-on": "",
-//    "format-off": "󰂲",
-//    "format-connected": "󰂱 {num_connections}",
-//    "on-click": "blueman-manager",
-//    "tooltip": true
-//  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
 
   "backlight": {
     "format": "󰃟 {percent}%",
@@ -119,20 +105,23 @@
   },
 
   "battery": {
-    "format": "{icon} {capacity}% ({time})",
-    "format-charging": " {capacity}% ({time})",
-    "format-full": "  {capacity}%",
-    "format-icons": ["","","","",""],
+    "format": "{capacity}%",
     "states": { "warning": 20, "critical": 10 },
     "tooltip": true,
-    "tooltip-format": "Status: {state}\nCapacity: {capacity}%\nTime: {time}\nPower: {power} W",
     "on-click": "gnome-power-statistics"
+  },
+
+  "power-profiles-daemon": {
+    "format": "{profile}",
+    "tooltip": true,
+    "on-click": "powerprofilesctl toggle"
   },
 
   "custom/vpn": {
     "format": "{icon} {state}",
     "return-type": "json",
     "exec": "~/.local/bin/waybar-vpn-status",
+    "exec-if": "test -x ~/.local/bin/waybar-vpn-status",
     "interval": 5,
     "tooltip": true
   },
@@ -141,6 +130,7 @@
     "format": "{icon}",
     "return-type": "json",
     "exec": "~/.local/bin/waybar-mic-status",
+    "exec-if": "test -x ~/.local/bin/waybar-mic-status",
     "on-click": "~/.local/bin/waybar-mic-toggle",
     "interval": 2,
     "tooltip": true
@@ -150,6 +140,7 @@
     "format": "{icon}",
     "return-type": "json",
     "exec": "~/.local/bin/waybar-cam-indicator",
+    "exec-if": "test -x ~/.local/bin/waybar-cam-indicator",
     "interval": 3,
     "tooltip": true
   },
@@ -158,6 +149,7 @@
     "format": "{icon}",
     "return-type": "json",
     "exec": "~/.local/bin/waybar-dnd-status",
+    "exec-if": "test -x ~/.local/bin/waybar-dnd-status",
     "on-click": "~/.local/bin/waybar-dnd-toggle",
     "interval": 2,
     "tooltip": true

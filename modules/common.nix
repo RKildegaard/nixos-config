@@ -71,6 +71,8 @@
 	gnome-themes-extra
   	papirus-icon-theme
   	bibata-cursors
+	gnome-power-manager
+	polkit_gnome
 
     # Displays/Wayland tools
     	wlr-randr
