@@ -1,0 +1,5 @@
+# .sops.yaml
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    age: "age1els2qw7drsywfg6fls0hhtmtvdj4qczcsl7rfsgdqkec8el7h3vqfjg608" 
+

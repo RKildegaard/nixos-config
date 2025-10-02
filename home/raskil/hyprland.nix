@@ -7,7 +7,7 @@
 
     settings = {
       # --- Monitors (safe default) ---
-      monitor = [ ",preferred,auto,1.25" ];
+      monitor = [ ",preferred,auto,1.5" ];
 
       # --- Input ---
       input = {
@@ -58,13 +58,12 @@
         enabled = true;
         bezier = [
           "ease,0.05,0.9,0.1,1.0"
-          "overshot,0.05,0.9,0.1,1.1"
         ];
         animation = [
           "windows, 1, 7, ease, slide"
           "border, 1, 10, ease"
           "fade, 1, 7, ease"
-          "workspaces, 1, 6, overshot, slide"
+          "workspaces, 1, 6, ease, slide"
         ];
       };
 

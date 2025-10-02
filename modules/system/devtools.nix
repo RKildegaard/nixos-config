@@ -1,13 +1,14 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 {
-  # Nix & store hygiene
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       warn-dirty = false;
-      # substituters / trusted-public-keys can be added here if you use Cachix
+
+      # ❌ REMOVE the old access-tokens with builtins.readFile here
+      # access-tokens = [ ... ];
     };
     gc = {
       automatic = true;
@@ -16,16 +17,41 @@
     };
   };
 
-  # Containers (pick one; docker or podman). Docker here matches your earlier setup.
+  # ---- sops-nix wiring ----
+  sops.age.keyFile = "/var/lib/sops-nix/age/keys.txt";
+  sops.defaultSopsFile = ../../secrets/secrets.yaml;
+
+  # Decrypt the raw token (not used directly in nix.settings)
+  sops.secrets.github_token = {
+    owner = "root";
+    mode = "0400";
+  };
+
+  # Render a netrc using the secret at activation time
+  sops.templates."nix-netrc".content = ''
+    machine github.com
+      login x-oauth-basic
+      password {{ .github_token }}
+  '';
+  sops.templates."nix-netrc".mode = "0400";
+
+  # Install the rendered netrc to /etc so nix-daemon can use it
+  environment.etc."nix/netrc" = {
+    source = config.sops.templates."nix-netrc".path;
+    mode = "0400";
+  };
+
+  # Point Nix at the netrc
+  nix.settings.netrc-file = "/etc/nix/netrc";
+
+  # ---- the rest of your module ----
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
   };
 
-  # Developer QoL (system-level). User tooling stays in HM.
   programs.git.enable = true;
 
-  # Kernel tweaks (optional)
   boot.kernel.sysctl."fs.inotify.max_user_watches" = 1048576;
 }
 
