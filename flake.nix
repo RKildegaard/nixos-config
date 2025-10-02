@@ -9,54 +9,37 @@
 
   outputs = { self, nixpkgs, home-manager, ... }:
   let
-    forSystem = system: let
-      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-    in {
-      pkgs = pkgs;
-      lib = nixpkgs.lib;
+    lib = nixpkgs.lib;
+
+    # Helper to build a host by name with shared modules
+    mkHost = hostPath: lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        hostPath
+
+        # System modules (new paths)
+        ./modules/system/common.nix
+        ./modules/system/locale.nix
+        ./modules/system/users.nix
+        ./modules/system/packages.nix
+        ./modules/system/devtools.nix
+        ./modules/system/greetd.nix
+        ./modules/system/wayland-hyprland.nix
+
+        { nixpkgs.overlays = [ (import ./modules/overlays) ]; }
+
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.raskil = import ./home/raskil;
+        }
+      ];
     };
-  in
-  {
+  in {
     nixosConfigurations = {
-      laptop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/laptop/configuration.nix
-          ./modules/common.nix
-          ./modules/locale.nix
-          ./modules/users.nix
-          ./modules/packages.nix
-          ./modules/devtools.nix
-          ./modules/wayland-hyprland.nix
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.raskil = import ./home/raskil/common.nix;
-          }
-        ];
-      };
-
-      desktop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/desktop/configuration.nix
-          ./modules/common.nix
-          ./modules/locale.nix
-          ./modules/users.nix
-          ./modules/packages.nix
-          ./modules/devtools.nix
-          ./modules/wayland-hyprland.nix
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.raskil = import ./home/raskil/common.nix;
-          }
-        ];
-      };
+      laptop  = mkHost ./hosts/laptop/configuration.nix;
+      desktop = mkHost ./hosts/desktop/configuration.nix;
     };
   };
 }

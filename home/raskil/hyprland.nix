@@ -1,113 +1,97 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    systemd.enable = true;
+
+    # If your system-level `programs.hyprland.enable = true;` is set already,
+    # this HM module just handles user config.
+    # If you want to pin a package here:
+    # package = pkgs.hyprland;
+
     settings = {
-      monitor = ",preferred,auto,1";
-      env = [
-  	"XCURSOR_THEME,Bibata-Modern-Classic"
-  	"XCURSOR_SIZE,20"
-	"HYPRCURSOR_THEME,Bibata-Modern-Classic"
-  	"HYPRCURSOR_SIZE,20"
-      ];
+      # --- Monitors (example) ---
+      # monitor = [
+      #   "eDP-1,1920x1200@60,0x0,1"
+      #   "HDMI-A-1,2560x1440@144,1920x0,1"
+      # ];
 
-
-      exec-once = [
-	"${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-        "nm-applet"
-        "blueman-applet"
-        "udiskie --tray"
-        "mako"
-        "hyprpaper"
-        "wl-paste --watch cliphist store"
-        # "waybar"
-        # "way-displays --tray"
-      ];
-
+      # --- Inputs ---
       input = {
-        kb_layout = "dk";
+        kb_layout = "us";
         follow_mouse = 1;
-
-        accel_profile = "adaptive";
-        force_no_accel = 0;
-        sensitivity = 0.0;
-
-        touchpad = {
-          natural_scroll = true;
-          "tap-to-click" = true;
-          disable_while_typing = true;
-        };
+        touchpad = { natural_scroll = "yes"; tap-to-click = "yes"; };
       };
 
+      # --- General ---
       general = {
-        gaps_in = 3;
-        gaps_out = 6;
-        border_size = 1;
-        "col.active_border" = "rgba(33ccffdd)";
-        "col.inactive_border" = "rgba(666666aa)";
+        gaps_in = 6;
+        gaps_out = 12;
+        border_size = 2;
+        "col.active_border" = "rgba(89b4faee)";
+        "col.inactive_border" = "rgba(313244aa)";
+        layout = "dwindle";
       };
 
+      # --- Decoration ---
       decoration = {
-        rounding = 0;
-        blur = { enabled = false; };
-        # shadow = false;   # <- removed to avoid 'decorations:shadow' error
+        rounding = 8;
+        blur = { enabled = true; size = 6; passes = 2; };
+        drop_shadow = true;
+        shadow_range = 20;
       };
 
-      bind = [
-        "SUPER, RETURN, exec, foot"
-        "SUPER, D, exec, wofi --show drun"
-        "SUPER, C, exec, code"
-        "SUPER, Q, killactive"
-        "SUPER, F, fullscreen"
-        "SUPER, H, movefocus, l"
-        "SUPER, J, movefocus, d"
-        "SUPER, K, movefocus, u"
-        "SUPER, L, movefocus, r"
-        "SUPER, 1, workspace, 1"
-        "SUPER, 2, workspace, 2"
-        "SUPER, 3, workspace, 3"
-        "SUPER, 4, workspace, 4"
-        "SUPER, 5, workspace, 5"
-        "SUPER, 6, workspace, 6"
-        "SUPER, 7, workspace, 7"
-        "SUPER, 8, workspace, 8"
-        "SUPER, 9, workspace, 9"
-        "SUPER, 0, workspace, 10"
-        "SUPER SHIFT, 1, movetoworkspace, 1"
-        "SUPER SHIFT, 2, movetoworkspace, 2"
-        "SUPER SHIFT, 3, movetoworkspace, 3"
-        "SUPER SHIFT, 4, movetoworkspace, 4"
-        "SUPER SHIFT, 5, movetoworkspace, 5"
-        "SUPER SHIFT, 6, movetoworkspace, 6"
-        "SUPER SHIFT, 7, movetoworkspace, 7"
-        "SUPER SHIFT, 8, movetoworkspace, 8"
-        "SUPER SHIFT, 9, movetoworkspace, 9"
-        "SUPER SHIFT, 0, movetoworkspace, 10"
-        "SUPER, grave, togglespecialworkspace"
-        "SUPER SHIFT, grave, movetoworkspace, special"
-        "SUPER, ESCAPE, exec, ~/.local/bin/powermenu"
-        "SUPER, B, exec, sh -c 'pkill waybar; waybar &'"
-        "SUPER, SHIFT+R, exec, hyprctl reload"
-        "SUPER, SHIFT+E, exec, hyprctl dispatch exit"
-        "SUPER, S, exec, grim -g \"$(slurp)\" - | wl-copy"
-        "SUPER, SHIFT+S, exec, grim ~/Pictures/$(date +%F_%H-%M-%S).png"
-        "SUPER, V, exec, bash -lc 'cliphist list | wofi --dmenu | cliphist decode | wl-copy'"
+      # --- Animations (optional nice defaults) ---
+      animations = {
+        enabled = true;
+        bezier = [
+          "ease,0.05,0.9,0.1,1.0"
+          "overshot,0.05,0.9,0.1,1.1"
+        ];
+        animation = [
+          "windows, 1, 7, ease, slide"
+          "border, 1, 10, ease"
+          "fade, 1, 7, ease"
+          "workspaces, 1, 6, overshot, slide"
+        ];
+      };
+
+      # --- Environment (keep here only if not set system-wide) ---
+      env = [
+        "XCURSOR_SIZE,20"
+        "HYPRCURSOR_SIZE,20"
       ];
 
-      binde = [
-        ",XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%"
-        ",XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%"
-        ",XF86AudioMute,        exec, pactl set-sink-mute @DEFAULT_SINK@ toggle"
-        ",XF86MonBrightnessUp,   exec, brightnessctl set +5%"
-        ",XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+      # --- Binds ---
+      "$mod" = "SUPER";
+      bind = [
+        "$mod, Return, exec, foot"
+        "$mod, Q, killactive"
+        "$mod, E, exec, wofi --show drun"
+        "$mod, Space, togglefloating"
+        "$mod, F, fullscreen, 1"
+        "$mod, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy"
+        "$mod, P, exec, grim -g \"$(slurp)\" - | swappy -f -"
+        "$mod, H, movefocus, l"
+        "$mod, L, movefocus, r"
+        "$mod, K, movefocus, u"
+        "$mod, J, movefocus, d"
+        "$mod SHIFT, H, movewindow, l"
+        "$mod SHIFT, L, movewindow, r"
+        "$mod SHIFT, K, movewindow, u"
+        "$mod SHIFT, J, movewindow, d"
+        "$mod, 1, workspace, 1"
+        "$mod, 2, workspace, 2"
+        "$mod, 3, workspace, 3"
+        "$mod, 4, workspace, 4"
+        "$mod, 5, workspace, 5"
+      ];
+
+      # --- Exec-once ---
+      # Keep exec-once minimal; most things are HM services now.
+      exec-once = [
+        "waybar"   # Waybar is a user app; we’ll manage its files via HM below
       ];
     };
   };
-
-  programs.waybar.enable = true;
-  programs.waybar.systemd.enable = true;
-  programs.foot.enable = true;
-  programs.rofi.enable = false;
 }
 

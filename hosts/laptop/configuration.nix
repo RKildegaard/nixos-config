@@ -1,25 +1,23 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, ... }:
+
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/greetd.nix
+
+    ../../modules/system/common.nix
+    ../../modules/system/locale.nix
+    ../../modules/system/users.nix
+    ../../modules/system/packages.nix
+    ../../modules/system/devtools.nix
+    ../../modules/system/greetd.nix
+    ../../modules/system/wayland-hyprland.nix
   ];
 
-  networking.hostName = "laptop";
-  boot.loader.grub = {
-    	enable = true;
-    	device = "nodev";
-	efiSupport = true;
-  };
- 
-  boot.loader.efi = {
-	canTouchEfiVariables = true;
-	efiSysMountPoint = "/boot/efi";
-  };  
- 
-  services.blueman.enable = true;
-  services.tlp.enable = false;
-  services.power-profiles-daemon.enable = true;
-  services.upower.enable = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  services.tlp.enable = true;
+
+  # NVIDIA or AMD specific stuff would live here (not in common modules).
 }
 
