@@ -13,11 +13,24 @@
     ../../modules/system/wayland-hyprland.nix
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  services.tlp.enable = true;
+  networking.hostName = "laptop";
+  boot.loader.grub = {
+    	enable = true;
+    	device = "nodev";
+	efiSupport = true;
+  };
+ 
+  boot.loader.efi = {
+	canTouchEfiVariables = true;
+	efiSysMountPoint = "/boot/efi";
+  }; 
+ 
+  services.blueman.enable = true;
+  services.power-profiles-daemon.enable = true;
+  services.upower.enable = true;
 
   # NVIDIA or AMD specific stuff would live here (not in common modules).
+
+  system.stateVersion = "25.05";
 }
 

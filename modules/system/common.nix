@@ -9,11 +9,11 @@
   hardware.cpu.amd.updateMicrocode   = lib.mkDefault true;
 
   # OpenGL / video accel (generic; nvidia users can extend in host config)
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
+  
 
   # --- Networking -------------------------------------------------------------
   networking.networkmanager.enable = true;
@@ -44,26 +44,29 @@
 
   # --- Fonts ------------------------------------------------------------------
   fonts = {
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-emoji
-      # Install nerdfonts system-wide only if you actually use them here
-      # (prefer minimal system; put big fonts in Home Manager if you can).
-    ];
-    enableDefaultPackages = true;
-    fontconfig.defaultFonts = {
-      serif = [ "Noto Serif" ];
-      sansSerif = [ "Noto Sans" ];
-      monospace = [ "Noto Sans Mono" ];
-      emoji = [ "Noto Color Emoji" ];
-    };
+  packages = with pkgs; [
+    noto-fonts
+    noto-fonts-emoji
+    font-awesome
+
+    # Nerd Fonts (new style)
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
+  ];
+
+  enableDefaultPackages = true;
+
+  fontconfig.defaultFonts = {
+    serif      = [ "Noto Serif" ];
+    sansSerif  = [ "Noto Sans" ];
+    monospace  = [ "JetBrainsMono Nerd Font" "Noto Sans Mono" ];
+    emoji      = [ "Noto Color Emoji" ];
   };
+};
+
 
   # --- XDG portals (default chooser set in wayland-hyprland.nix) -------------
   xdg.portal.enable = true;
-
-  # --- Ozone/Wayland flag for Electron/Chromium apps -------------------------
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # --- Polkit (system) --------------------------------------------------------
   security.polkit.enable = true;

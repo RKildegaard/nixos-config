@@ -22,6 +22,9 @@
     config.common.default = [ "hyprland" "gtk" ];
   };
 
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+ 
+
   # Input methods, if you need them (commented by default)
   # i18n.inputMethod = {
   #   enabled = "fcitx5";
@@ -29,11 +32,11 @@
   # };
 
   # Video accel for Wayland (generic; specific GPUs can extend in hosts/*)
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
+
 
   # Seat management for pure Wayland TTY login flows
   services.seatd.enable = true;

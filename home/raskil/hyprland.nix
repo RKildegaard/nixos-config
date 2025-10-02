@@ -2,27 +2,30 @@
 {
   wayland.windowManager.hyprland = {
     enable = true;
-
-    # If your system-level `programs.hyprland.enable = true;` is set already,
-    # this HM module just handles user config.
-    # If you want to pin a package here:
-    # package = pkgs.hyprland;
+    # Use systemd user units for session/autostarts
+    systemd.enable = true;
 
     settings = {
-      # --- Monitors (example) ---
-      # monitor = [
-      #   "eDP-1,1920x1200@60,0x0,1"
-      #   "HDMI-A-1,2560x1440@144,1920x0,1"
-      # ];
+      # --- Monitors (safe default) ---
+      monitor = [ ",preferred,auto,1.5" ];
 
-      # --- Inputs ---
+      # --- Input ---
       input = {
-        kb_layout = "us";
+        kb_layout = "dk";
         follow_mouse = 1;
-        touchpad = { natural_scroll = "yes"; tap-to-click = "yes"; };
+
+        accel_profile = "adaptive";
+        force_no_accel = 0;
+        sensitivity = 0.0;
+
+        touchpad = {
+          natural_scroll = true;
+          "tap-to-click" = true;
+          disable_while_typing = true;
+        };
       };
 
-      # --- General ---
+      # --- General window look/feel ---
       general = {
         gaps_in = 6;
         gaps_out = 12;
@@ -32,15 +35,25 @@
         layout = "dwindle";
       };
 
-      # --- Decoration ---
+      # --- Decoration (Hyprland 0.4x style) ---
       decoration = {
         rounding = 8;
-        blur = { enabled = true; size = 6; passes = 2; };
-        drop_shadow = true;
-        shadow_range = 20;
+
+        blur = {
+          enabled = true;
+          size = 6;
+          passes = 2;
+        };
+
+        shadow = {
+          enabled = true;
+          range = 20;
+          render_power = 3;
+          color = "rgba(00000066)";
+        };
       };
 
-      # --- Animations (optional nice defaults) ---
+      # --- Animations ---
       animations = {
         enabled = true;
         bezier = [
@@ -55,41 +68,108 @@
         ];
       };
 
-      # --- Environment (keep here only if not set system-wide) ---
+      # --- Env from user scope only if you want to override HM cursor ---
       env = [
         "XCURSOR_SIZE,20"
         "HYPRCURSOR_SIZE,20"
+        # theme is handled by home.pointerCursor; no need to set here
       ];
 
-      # --- Binds ---
+      # --- Keybinds ---
       "$mod" = "SUPER";
+
       bind = [
-        "$mod, Return, exec, foot"
+        # apps / actions
+        "$mod, RETURN, exec, foot"
+        "$mod, D, exec, wofi --show drun"
+        "$mod, C, exec, code"
         "$mod, Q, killactive"
-        "$mod, E, exec, wofi --show drun"
-        "$mod, Space, togglefloating"
         "$mod, F, fullscreen, 1"
+        "$mod, Space, togglefloating"
+
+        # clipboard menu (cliphist + wofi)
         "$mod, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy"
-        "$mod, P, exec, grim -g \"$(slurp)\" - | swappy -f -"
+
+        # screenshots
+        "$mod, S, exec, grim -g \"$(slurp)\" - | wl-copy"
+        "$mod, SHIFT+S, exec, grim ~/Pictures/$(date +%F_%H-%M-%S).png"
+
+        # waybar quick restart
+        "$mod, B, exec, sh -c 'pkill waybar || true; ${pkgs.waybar}/bin/waybar &'"
+
+        # hypr controls
+        "$mod, SHIFT+R, exec, hyprctl reload"
+        "$mod, SHIFT+E, exec, hyprctl dispatch exit"
+
+        # powermenu (your packaged script)
+        "$mod, ESCAPE, exec, powermenu"
+
+        # focus movement
         "$mod, H, movefocus, l"
-        "$mod, L, movefocus, r"
-        "$mod, K, movefocus, u"
         "$mod, J, movefocus, d"
+        "$mod, K, movefocus, u"
+        "$mod, L, movefocus, r"
+
+        # move windows
         "$mod SHIFT, H, movewindow, l"
-        "$mod SHIFT, L, movewindow, r"
-        "$mod SHIFT, K, movewindow, u"
         "$mod SHIFT, J, movewindow, d"
+        "$mod SHIFT, K, movewindow, u"
+        "$mod SHIFT, L, movewindow, r"
+
+        # workspaces 1–10
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
         "$mod, 3, workspace, 3"
         "$mod, 4, workspace, 4"
         "$mod, 5, workspace, 5"
+        "$mod, 6, workspace, 6"
+        "$mod, 7, workspace, 7"
+        "$mod, 8, workspace, 8"
+        "$mod, 9, workspace, 9"
+        "$mod, 0, workspace, 10"
+
+        # move to workspace
+        "$mod SHIFT, 1, movetoworkspace, 1"
+        "$mod SHIFT, 2, movetoworkspace, 2"
+        "$mod SHIFT, 3, movetoworkspace, 3"
+        "$mod SHIFT, 4, movetoworkspace, 4"
+        "$mod SHIFT, 5, movetoworkspace, 5"
+        "$mod SHIFT, 6, movetoworkspace, 6"
+        "$mod SHIFT, 7, movetoworkspace, 7"
+        "$mod SHIFT, 8, movetoworkspace, 8"
+        "$mod SHIFT, 9, movetoworkspace, 9"
+        "$mod SHIFT, 0, movetoworkspace, 10"
+
+        # special workspace
+        "$mod, grave, togglespecialworkspace"
+        "$mod SHIFT, grave, movetoworkspace, special"
       ];
 
-      # --- Exec-once ---
-      # Keep exec-once minimal; most things are HM services now.
+      # media/brightness keys (work even when a window has focus)
+      bindl = [
+        # XF86 media keys
+        ", XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ", XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%"
+        ", XF86AudioMute,        exec, pactl set-sink-mute @DEFAULT_SINK@ toggle"
+        ", XF86AudioPlay,        exec, playerctl play-pause"
+        ", XF86AudioStop,        exec, playerctl stop"
+
+        ", XF86MonBrightnessUp,   exec, brightnessctl set +5%"
+        ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+
+        # Raw F-keys (for boards mapping brightness/volume to F1–F7)
+        ", F3, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ", F2, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%"
+        ", F1, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle"
+        ", F4, exec, playerctl play-pause"
+
+        ", F7, exec, brightnessctl set +5%"
+        ", F6, exec, brightnessctl set 5%-"
+      ];
+
+      # Minimal exec-once: most daemons are managed by HM services
       exec-once = [
-        "waybar"   # Waybar is a user app; we’ll manage its files via HM below
+        "waybar"
       ];
     };
   };

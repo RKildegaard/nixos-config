@@ -19,6 +19,7 @@
   # Consistent cursor via HM (GTK + Wayland)
   home.pointerCursor = {
     name = "Bibata-Modern-Classic";
+    package = pkgs.bibata-cursors;
     size = 20;
     gtk.enable = true;
   };
