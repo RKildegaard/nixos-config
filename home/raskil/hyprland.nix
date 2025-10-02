@@ -71,7 +71,8 @@
       env = [
         "XCURSOR_SIZE,20"
         "HYPRCURSOR_SIZE,20"
-        # theme is handled by home.pointerCursor; no need to set here
+	"LIBVA_DRIVER_NAME,nvidia"
+	"__GLX_VENDOR_LIBRARY_NAME,nvidia"
       ];
 
       # --- Keybinds ---

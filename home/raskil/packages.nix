@@ -30,7 +30,7 @@
 	google-chrome
 	onedrive
 
-
+	python314
 	brightnessctl
 	playerctl 
 	pulseaudio

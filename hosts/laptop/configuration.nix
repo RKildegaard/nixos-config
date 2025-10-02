@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./nvidia.nix
 
     ../../modules/system/common.nix
     ../../modules/system/locale.nix
