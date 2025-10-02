@@ -24,8 +24,13 @@
     	swappy
     	wtype
 
-    	signal-desktop
+    # Applications 
+   	signal-desktop
     	firefox
+	google-chrome
+	onedrive
+
+
 	brightnessctl
 	playerctl 
 	pulseaudio

@@ -7,7 +7,7 @@
 
     settings = {
       # --- Monitors (safe default) ---
-      monitor = [ ",preferred,auto,1.5" ];
+      monitor = [ ",preferred,auto,1.25" ];
 
       # --- Input ---
       input = {
