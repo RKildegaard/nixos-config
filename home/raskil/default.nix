@@ -14,13 +14,6 @@
 
   home.stateVersion = "24.11";
 
-  home.pointerCursor = {
-    name = "Bibata-Modern-Classic";
-    package = pkgs.bibata-cursors;
-    size = 20;
-    gtk.enable = true;
-  };
-
   home.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
