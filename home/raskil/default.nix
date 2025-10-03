@@ -9,6 +9,7 @@
     ./hyprland.nix
     ./waybar.nix
     ./mako.nix
+    ./settings.nix
   ];
 
   home.stateVersion = "24.11";
