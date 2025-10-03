@@ -1,0 +1,15 @@
+{
+  "appearance": {
+    "cursor": { "name": "Bibata-Modern-Classic", "size": 20 },
+    "font": { "monospace": "JetBrainsMono Nerd Font", "terminalSize": 12 }
+  },
+  "display": {
+    "monitors": [
+      { "name": "eDP-1", "scale": 1.25 }
+    ]
+  },
+  "keyboard": {
+    "layout": "dk"
+  }
+}
+
