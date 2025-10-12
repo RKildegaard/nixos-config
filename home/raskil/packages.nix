@@ -15,6 +15,8 @@
     	btop 
 	htop 
 	tree
+	kubectl
+	kubeseal
 
     # Wayland helpers
     	wl-clipboard
@@ -30,7 +32,6 @@
 	google-chrome
 	onedrive
 
-	python314
 	brightnessctl
 	playerctl 
 	pulseaudio

@@ -7,22 +7,22 @@
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }:
   let
     lib = nixpkgs.lib;
 
     # Build a host with the shared module stack
     mkHost = hostPath: lib.nixosSystem {
       system = "x86_64-linux";
+
+      specialArgs = { inherit self nixos-hardware; };
+      
       modules = [
         hostPath
 
-        # sops-nix module (for your secrets)
-        sops-nix.nixosModules.sops
 
         # System modules
         ./modules/system/common.nix

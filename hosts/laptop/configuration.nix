@@ -1,9 +1,11 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, nixos-hardware, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
-    ./nvidia.nix
+    
+
+    nixos-hardware.nixosModules.dell-precision-5570
 
     ../../modules/system/common.nix
     ../../modules/system/locale.nix
@@ -30,7 +32,7 @@
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
 
-  # NVIDIA or AMD specific stuff would live here (not in common modules).
+  services.twingate.enable = lib.mkDefault true;
 
   system.stateVersion = "25.05";
 }
