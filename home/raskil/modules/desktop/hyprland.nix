@@ -4,14 +4,12 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    # Use systemd user units for session/autostarts
     systemd.enable = true;
 
     settings = {
-      # --- Monitors (safe default) ---
       monitor = [ ",preferred,auto,1.5" ];
 
-      # --- Input ---
+
       input = {
         kb_layout = "dk";
         follow_mouse = 1;
@@ -27,7 +25,7 @@
         };
       };
 
-      # --- General window look/feel ---
+
       general = {
         gaps_in = 6;
         gaps_out = 12;
@@ -37,7 +35,7 @@
         layout = "dwindle";
       };
 
-      # --- Decoration (Hyprland 0.4x style) ---
+
       decoration = {
         rounding = 8;
 
@@ -55,7 +53,7 @@
         };
       };
 
-      # --- Animations ---
+
       animations = {
         enabled = true;
         bezier = [
@@ -69,7 +67,7 @@
         ];
       };
 
-      # --- Env from user scope only if you want to override HM cursor ---
+
       env = [
         "XCURSOR_SIZE,20"
         "HYPRCURSOR_SIZE,20"
@@ -77,11 +75,11 @@
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
       ];
 
-      # --- Keybinds ---
+
       "$mod" = "SUPER";
 
       bind = [
-        # apps / actions
+  
         "$mod, RETURN, exec, foot"
         "$mod, D, exec, wofi --show drun"
         "$mod, C, exec, code"
@@ -92,38 +90,38 @@
         "$mod, F, fullscreen, 1"
         "$mod, Space, togglefloating"
 
-        # clipboard menu (cliphist + wofi)
+  
         "$mod, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy"
 
-        # screenshots
+  
         "$mod, S, exec, grim -g \"$(slurp)\" - | wl-copy"
         "$mod, SHIFT+S, exec, grim ~/Pictures/$(date +%F_%H-%M-%S).png"
 
-        # waybar quick restart
+  
         "$mod, B, exec, sh -c 'pkill waybar || true; ${pkgs.waybar}/bin/waybar &'"
 
-        # hypr controls
+  
         "$mod, SHIFT+R, exec, hyprctl reload"
         "$mod, SHIFT+E, exec, hyprctl dispatch exit"
         "$mod, CTRL+L, exec, lockscreen"
         "$mod ALT, L, exec, lockscreen"
 
-        # powermenu (your packaged script)
+  
         "$mod, ESCAPE, exec, powermenu"
 
-        # focus movement
+  
         "$mod, H, movefocus, l"
         "$mod, J, movefocus, d"
         "$mod, K, movefocus, u"
         "$mod, L, movefocus, r"
 
-        # move windows
+  
         "$mod SHIFT, H, movewindow, l"
         "$mod SHIFT, J, movewindow, d"
         "$mod SHIFT, K, movewindow, u"
         "$mod SHIFT, L, movewindow, r"
 
-        # workspaces 1–10
+  
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
         "$mod, 3, workspace, 3"
@@ -135,7 +133,7 @@
         "$mod, 9, workspace, 9"
         "$mod, 0, workspace, 10"
 
-        # move to workspace
+  
         "$mod SHIFT, 1, movetoworkspace, 1"
         "$mod SHIFT, 2, movetoworkspace, 2"
         "$mod SHIFT, 3, movetoworkspace, 3"
@@ -147,14 +145,13 @@
         "$mod SHIFT, 9, movetoworkspace, 9"
         "$mod SHIFT, 0, movetoworkspace, 10"
 
-        # special workspace
+  
         "$mod, grave, togglespecialworkspace"
         "$mod SHIFT, grave, movetoworkspace, special"
       ];
 
-      # media/brightness keys (work even when a window has focus)
+
       bindl = [
-        # XF86 media keys
         ", XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%"
         ", XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%"
         ", XF86AudioMute,        exec, pactl set-sink-mute @DEFAULT_SINK@ toggle"
@@ -164,7 +161,7 @@
         ", XF86MonBrightnessUp,   exec, brightnessctl set +5%"
         ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
 
-        # Raw F-keys (for boards mapping brightness/volume to F1–F7)
+  
         ", F3, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%"
         ", F2, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%"
         ", F1, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle"
@@ -174,7 +171,7 @@
         ", F6, exec, brightnessctl set 5%-"
       ];
 
-      # Minimal exec-once: most daemons are managed by HM services
+
       exec-once = [
         "waybar"
         "hypridle"
