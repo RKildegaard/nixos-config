@@ -1,5 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {
+  xdg.configFile."hypr/hyprlock.conf".source = ../../files/hyprlock.conf;
+
   wayland.windowManager.hyprland = {
     enable = true;
     # Use systemd user units for session/autostarts
@@ -71,8 +73,8 @@
       env = [
         "XCURSOR_SIZE,20"
         "HYPRCURSOR_SIZE,20"
-	"LIBVA_DRIVER_NAME,nvidia"
-	"__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "LIBVA_DRIVER_NAME,nvidia"
+        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
       ];
 
       # --- Keybinds ---
@@ -83,6 +85,9 @@
         "$mod, RETURN, exec, foot"
         "$mod, D, exec, wofi --show drun"
         "$mod, C, exec, code"
+        "$mod, A, exec, easyeffects -w presets"
+        "$mod SHIFT, A, exec, sh -c 'pw-cli set-node-prop ladspa_output.eq node.pause true'"
+        "$mod CTRL, A, exec, sh -c 'pw-cli set-node-prop ladspa_output.eq node.pause false'"
         "$mod, Q, killactive"
         "$mod, F, fullscreen, 1"
         "$mod, Space, togglefloating"
@@ -100,6 +105,8 @@
         # hypr controls
         "$mod, SHIFT+R, exec, hyprctl reload"
         "$mod, SHIFT+E, exec, hyprctl dispatch exit"
+        "$mod, CTRL+L, exec, lockscreen"
+        "$mod ALT, L, exec, lockscreen"
 
         # powermenu (your packaged script)
         "$mod, ESCAPE, exec, powermenu"
@@ -170,8 +177,8 @@
       # Minimal exec-once: most daemons are managed by HM services
       exec-once = [
         "waybar"
+        "hypridle"
       ];
     };
   };
 }
-

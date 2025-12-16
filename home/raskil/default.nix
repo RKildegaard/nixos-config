@@ -1,15 +1,11 @@
 { config, pkgs, lib, ... }:
-
 {
-
   imports = [
-    ./packages.nix
-    ./programs.nix
-    ./services.nix
-    ./hyprland.nix
-    ./waybar.nix
-    ./mako.nix
-    ./settings.nix
+    ./modules/packages.nix
+    ./modules/programs.nix
+    ./modules/services.nix
+    ./modules/desktop
+    ./modules/settings.nix
   ];
 
   home.stateVersion = "24.11";
@@ -23,5 +19,8 @@
   xdg.userDirs.enable = true;
 
   programs.bash.enable = true;
-}
 
+  home.activation.cleanupGtkrc = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    rm -f "${config.home.homeDirectory}/.gtkrc-2.0"
+  '';
+}

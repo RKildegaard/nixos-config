@@ -1,0 +1,53 @@
+/* ===== Misc modules ===== */
+
+#pulseaudio.muted { opacity: 0.6; }
+
+#custom-thermal { }
+#custom-thermal.warning {
+  background: @warn-bg;
+  border-color: @warn-bd;
+  color: #f9e0a8;
+}
+#custom-thermal.critical {
+  background: @crit-bg;
+  border-color: @crit-bd;
+  color: #ffe0e0;
+}
+
+#battery.warning {
+  background: @warn-bg;
+  border-color: @warn-bd;
+}
+#battery.critical {
+  background: @crit-bg;
+  border-color: @crit-bd;
+}
+
+#custom-power {
+  font-size: 13pt;
+  color: @accent;
+  border-color: rgba(0, 120, 212, 0.35);
+  background: rgba(0, 120, 212, 0.10);
+}
+#custom-power:hover {
+  background: rgba(0, 120, 212, 0.16);
+  border-color: rgba(0, 120, 212, 0.50);
+}
+
+tooltip {
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: rgba(32, 35, 41, 0.92);
+  color: @text;
+  border: 1px solid @border;
+}
+
+:focus, :selected, .focused {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0,120,212,0.45);
+  border-radius: 5px;
+}
+
+@keyframes blink {
+  50% { background-color: rgba(255, 74, 74, 0.35); }
+}

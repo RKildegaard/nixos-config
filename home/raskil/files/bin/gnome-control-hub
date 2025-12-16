@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Ensure GNOME Control Center runs outside of full GNOME sessions
+export XDG_CURRENT_DESKTOP="GNOME"
+export GNOME_SHELL_SESSION_MODE="gnome"
+
+exec gnome-control-center "$@"

@@ -1,0 +1,6 @@
+{ ... }:
+{
+  imports = [
+    ./tooling.nix
+  ];
+}

@@ -1,0 +1,17 @@
+show=drun
+allow-markup=true
+no_actions=true
+insensitive=true
+matching=fuzzy
+lines=8
+columns=4
+prompt=Search apps…
+width=1100
+height=700
+hide-scrollbar=true
+show-icons=true
+display-generic-icons=true
+image-size=48
+drun-display-format={name}
+icon-theme=Adwaita
+cache-file=/dev/null

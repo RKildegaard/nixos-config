@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+try_cmd() {
+  if command -v "$1" >/dev/null 2>&1; then
+    "$@"
+    exit 0
+  fi
+}
+
+try_cmd hyprlock
+try_cmd swaylock
+
+if [[ -n "${XDG_SESSION_ID:-}" ]]; then
+  loginctl lock-session "$XDG_SESSION_ID" && exit 0
+fi
+
+session_id=$(loginctl list-sessions --no-legend | awk -v user="$USER" '$3==user {print $1; exit}')
+if [[ -n "${session_id:-}" ]]; then
+  loginctl lock-session "$session_id" && exit 0
+fi
+
+loginctl lock-user "$USER" && exit 0
+loginctl lock-sessions && exit 0
+
+exit 1

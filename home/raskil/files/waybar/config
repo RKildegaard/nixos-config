@@ -19,10 +19,11 @@
     "custom/dnd",
     "custom/mic",
     "custom/cam",
+    "network",
     "backlight",
     "cpu",
     "memory",
-    "temperature",
+    "custom/thermal",
     "tray",
     "custom/vpn",
     "battery",
@@ -32,15 +33,15 @@
   ],
 
   "hyprland/workspaces": {
-    "format": "{icon}",
+    "format": "{name}",
+    "format-urgent": " {name}",
     "on-click": "hyprctl dispatch workspace {id}",
     "on-scroll-up": "hyprctl dispatch workspace e+1",
     "on-scroll-down": "hyprctl dispatch workspace e-1",
     "active-only": false,
-    "format-icons": {
-      "default": "",
-      "active": "",
-      "urgent": ""
+    "persistent-workspaces": {
+      "eDP-1": 5,
+      "DP-1": 5
     }
   },
 
@@ -98,9 +99,10 @@
     "tooltip": true
   },
 
-  "temperature": {
-    "critical-threshold": 80,
-    "format": "󰔏 {temperatureC}°C",
+  "custom/thermal": {
+    "return-type": "json",
+    "exec": "waybar-thermal",
+    "interval": 5,
     "tooltip": true
   },
 
@@ -124,6 +126,23 @@
     "exec-if": "test -x ~/.local/bin/waybar-vpn-status",
     "interval": 5,
     "tooltip": true
+  },
+
+  "network": {
+    "interval": 3,
+    "format-wifi": "{icon}  {essid}",
+    "format-ethernet": "{icon}  {ipaddr}",
+    "format-disconnected": "󰤮  offline",
+    "tooltip-format-wifi": "{ifname} · {signal}%\nSSID: {essid}\nIPv4: {ipaddr}\n↑ {bandwidthUpBits} ↓ {bandwidthDownBits}",
+    "tooltip-format-ethernet": "{ifname}\nIPv4: {ipaddr}\n↑ {bandwidthUpBits} ↓ {bandwidthDownBits}",
+    "tooltip-format-disconnected": "No active connection",
+    "format-icons": {
+      "wifi": [ "󰤟", "󰤢", "󰤥", "󰤨" ],
+      "ethernet": "󰈀"
+    },
+    "on-click": "gnome-control-hub wifi",
+    "on-click-right": "gnome-control-hub bluetooth",
+    "max-length": 22
   },
 
   "custom/mic": {
@@ -158,7 +177,6 @@
   "custom/power": {
     "format": "⏻",
     "tooltip": "Power",
-    "on-click": "~/.local/bin/powermenu"
+    "on-click": "powermenu"
   }
 }
-

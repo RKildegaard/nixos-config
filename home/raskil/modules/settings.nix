@@ -1,7 +1,7 @@
-{ config, pkgs, lib, ... }:
-
+{ pkgs, ... }:
 let
-  settings = builtins.fromJSON (builtins.readFile ../../settings/settings.json);
+  settingsFile = ../../../settings/settings.json;
+  settings = builtins.fromJSON (builtins.readFile settingsFile);
   toMonitorLine = m: "${m.name},preferred,auto,${toString m.scale}";
 in
 {
@@ -31,4 +31,3 @@ in
     ];
   };
 }
-

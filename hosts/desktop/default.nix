@@ -1,18 +1,19 @@
-{ config, pkgs, lib, ... }:
+{ ... }:
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/greetd.nix
+    ../../profiles/workstations/graphical.nix
   ];
 
   networking.hostName = "desktop";
+
   boot.loader.grub = {
     enable = true;
     device = "nodev";
     useOSProber = true;
   };
-  
-  services.blueman.enable = true;
-  services.tlp.enable = true; 
-}
 
+  services.tlp.enable = true;
+
+  system.stateVersion = "25.05";
+}

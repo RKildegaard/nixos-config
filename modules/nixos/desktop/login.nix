@@ -1,12 +1,9 @@
-{ pkgs, lib, ... }:
-
+{ pkgs, ... }:
 let
-  tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
-in
-{
+  tuigreet = "${pkgs.tuigreet}/bin/tuigreet";
+in {
   services.greetd = {
     enable = true;
-    vt = 1;
     settings = {
       default_session = {
         command = "${tuigreet} --remember --remember-user-session --time --cmd Hyprland";
@@ -17,4 +14,3 @@ in
 
   security.pam.services.greetd = { };
 }
-

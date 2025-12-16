@@ -1,0 +1,39 @@
+/* ===== Connectivity pill + tray popups ===== */
+
+#network {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: linear-gradient(130deg, rgba(0,120,212,0.32), rgba(16,110,190,0.15));
+  border-color: rgba(0,120,212,0.45);
+  color: #EBF5FF;
+  padding-right: 14px;
+  padding-left: 12px;
+  min-width: 140px;
+  border-left-width: 6px;
+  border-left-style: solid;
+  border-left-color: rgba(255,255,255,0.25);
+}
+
+#network:hover {
+  background: linear-gradient(130deg, rgba(0,120,212,0.44), rgba(16,110,190,0.22));
+  border-color: rgba(0,120,212,0.65);
+}
+
+#network.disconnected {
+  background: rgba(255, 74, 74, 0.15);
+  border-color: rgba(255, 74, 74, 0.45);
+  color: #FFB3B3;
+  border-left-color: rgba(255,104,104,0.9);
+}
+
+#network.ethernet {
+  background: linear-gradient(130deg, rgba(0, 192, 161, 0.35), rgba(0, 192, 161, 0.18));
+  border-color: rgba(0,192,161,0.55);
+  border-left-color: rgba(255,255,255,0.65);
+}
+
+
+.tooltip network {
+  background: rgba(10,12,18,0.95);
+  color: @text;
+}

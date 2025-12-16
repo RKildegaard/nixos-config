@@ -1,0 +1,23 @@
+/* ===== Shared module styling ===== */
+
+#clock, #tray, #pulseaudio, #network, #battery, #custom-power, #cpu, #memory, #custom-thermal, #backlight, #idle_inhibitor, #bluetooth {
+  padding: 2px 10px;
+  margin: 0 4px;
+  background: @bg-elev-1;
+  border: 1px solid @border-soft;
+  border-radius: 4px;
+  color: @text;
+}
+
+#clock:hover, #tray:hover, #pulseaudio:hover, #network:hover, #battery:hover, #custom-power:hover, #cpu:hover, #memory:hover, #custom-thermal:hover, #backlight:hover, #idle_inhibitor:hover, #bluetooth:hover {
+  background: @bg-elev-2;
+  border-color: @border;
+}
+
+.modules-left > widget:not(:first-child) > * ,
+.modules-center > widget:not(:first-child) > * ,
+.modules-right > widget:not(:first-child) > * {
+  border-left: 1px solid rgba(255,255,255,0.06);
+  margin-left: 6px;
+  padding-left: 10px;
+}

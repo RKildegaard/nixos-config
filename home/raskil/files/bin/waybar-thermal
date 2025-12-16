@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Tiny helper for Waybar: emits JSON with real CPU temperatures.
+set -euo pipefail
+
+preferred_types=(
+  "x86_pkg_temp"
+  "Package id 0"
+  "Tctl"
+  "cpu-thermal"
+  "soc-thermal"
+  "coretemp"
+)
+
+pick_zone() {
+  local fallback=""
+  for zone in /sys/class/thermal/thermal_zone*; do
+    [[ -f "$zone/temp" && -f "$zone/type" ]] || continue
+    local type
+    type=$(<"$zone/type")
+    [[ -z "$fallback" ]] && fallback="$zone"
+    for pref in "${preferred_types[@]}"; do
+      if [[ "$type" == "$pref" || "$type" == *"$pref"* ]]; then
+        printf '%s' "$zone"
+        return 0
+      fi
+    done
+  done
+  printf '%s' "${fallback:-/sys/class/thermal/thermal_zone0}"
+}
+
+emit() {
+  local zone="$1"
+  local raw
+  raw=$(<"$zone/temp")
+  [[ -n "$raw" ]] || raw=0
+  local temp_c
+  temp_c=$(awk -v t="$raw" 'BEGIN { printf "%.1f", t / 1000 }')
+
+  local class="normal"
+  local temp_int=${temp_c%.*}
+  if (( temp_int >= 85 )); then
+    class="critical"
+  elif (( temp_int >= 70 )); then
+    class="warning"
+  fi
+
+  local type
+  type=$(<"$zone/type")
+
+  printf '{"text":"󰔏 %s°C","class":"%s","tooltip":"CPU %s°C\\nSensor: %s"}\n' \
+    "$temp_c" "$class" "$temp_c" "$type"
+}
+
+zone=$(pick_zone)
+emit "$zone"

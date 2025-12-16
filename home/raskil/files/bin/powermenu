@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
-choice=$(printf "Logout\nReboot\nShutdown\nCancel" | wofi --show dmenu --prompt "Power")
-case "$choice" in
-  Logout)   hyprctl dispatch exit ;;
-  Reboot)   systemctl reboot ;;
-  Shutdown) systemctl poweroff ;;
+set -euo pipefail
+
+style="${XDG_CONFIG_HOME:-$HOME/.config}/wofi/powermenu.css"
+choices=$(
+  cat <<'EOF'
+  Lock
+󰍃  Logout
+󰜉  Reboot
+  Shutdown
+󰤄  Suspend
+󰜺  Cancel
+EOF
+)
+
+selection=$(printf '%s\n' "$choices" | wofi --dmenu --prompt "Power" --allow-markup --style "$style" --cache-file /dev/null)
+
+case "$selection" in
+ "  Lock")      lockscreen ;;
+  "󰍃  Logout")    hyprctl dispatch exit ;;
+  "󰜉  Reboot")    systemctl reboot ;;
+  "  Shutdown")  systemctl poweroff ;;
+  "󰤄  Suspend")   systemctl suspend ;;
   *) exit 0 ;;
 esac
-

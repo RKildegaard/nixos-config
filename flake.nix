@@ -2,9 +2,9 @@
   description = "NixOS multi-host (laptop/desktop) + Home Manager + Hyprland";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
@@ -21,17 +21,8 @@
       specialArgs = { inherit self nixos-hardware; };
       
       modules = [
+        ./modules/nixos
         hostPath
-
-
-        # System modules
-        ./modules/system/common.nix
-        ./modules/system/locale.nix
-        ./modules/system/users.nix
-        ./modules/system/packages.nix
-        ./modules/system/devtools.nix
-        ./modules/system/greetd.nix
-        ./modules/system/wayland-hyprland.nix
 
         # Optional overlays
         { nixpkgs.overlays = [ (import ./modules/overlays) ]; }
@@ -58,34 +49,34 @@
   in {
     # NixOS machines
     nixosConfigurations = {
-      laptop  = mkHost ./hosts/laptop/configuration.nix;
-      desktop = mkHost ./hosts/desktop/configuration.nix;
+      laptop  = mkHost ./hosts/laptop;
+      desktop = mkHost ./hosts/desktop;
     };
 
     # Packages produced by this flake (Rust GUI app)
-    packages = forAllSystems (pkgs: {
-      raskil-settings = pkgs.rustPlatform.buildRustPackage {
-        pname = "raskil-settings";
-        version = "0.1.0";
-        src = ./apps/settings;                     # <- your Rust project root
-        cargoLock = { lockFile = ./apps/settings/Cargo.lock; };
+    packages = forAllSystems (pkgs:
+      let
+        raskilSettings = pkgs.rustPlatform.buildRustPackage {
+          pname = "raskil-settings";
+          version = "0.1.0";
+          src = ./apps/settings;
+          cargoLock = { lockFile = ./apps/settings/Cargo.lock; };
 
-        nativeBuildInputs = [
-          pkgs.pkg-config
-          pkgs.wrapGAppsHook4
-        ];
-        buildInputs = [
-          pkgs.gtk4
-          pkgs.libadwaita
-        ];
+          nativeBuildInputs = [
+            pkgs.pkg-config
+            pkgs.wrapGAppsHook4
+          ];
+          buildInputs = [
+            pkgs.gtk4
+            pkgs.libadwaita
+          ];
 
-        # Optional: speed up builds a bit
-        RUSTFLAGS = "-C debuginfo=0";
-      };
-    });
-
-    # (Optional) default package for `nix build .`
-    defaultPackage.x86_64-linux = self.packages.x86_64-linux.raskil-settings;
+          RUSTFLAGS = "-C debuginfo=0";
+        };
+      in {
+        raskil-settings = raskilSettings;
+        default = raskilSettings;
+      }
+    );
   };
 }
-

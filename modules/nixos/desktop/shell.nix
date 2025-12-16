@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   # No Xorg display manager; greetd + Wayland only
@@ -7,14 +7,12 @@
   # Hyprland packages + session file
   programs.hyprland = {
     enable = true;
-    # package = pkgs.hyprland; # (pin here if desired)
     xwayland.enable = true;
   };
 
   # Portals: prioritize hyprland, then gtk
   xdg.portal = {
     enable = true;
-    # Using the hyprland portal + gtk portal avoids electron/firefox issues
     extraPortals = with pkgs; [
       xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk
@@ -22,27 +20,18 @@
     config.common.default = [ "hyprland" "gtk" ];
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
- 
-
   # Input methods, if you need them (commented by default)
   # i18n.inputMethod = {
   #   enabled = "fcitx5";
   #   fcitx5.addons = with pkgs; [ fcitx5-mozc fcitx5-gtk fcitx5-configtool ];
   # };
 
-  # Video accel for Wayland (generic; specific GPUs can extend in hosts/*)
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
-
   # Seat management for pure Wayland TTY login flows
   services.seatd.enable = true;
 
   # Env that only makes sense for Wayland/Hyprland — keep it here instead of HM
   environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
     XDG_SESSION_TYPE = "wayland";
     GDK_BACKEND = "wayland";
     QT_QPA_PLATFORM = "wayland";
@@ -51,4 +40,3 @@
     WLR_NO_HARDWARE_CURSORS = "1"; # helps some iGPU/NVIDIA combos; remove if not needed
   };
 }
-
