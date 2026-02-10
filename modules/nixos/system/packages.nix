@@ -5,6 +5,8 @@
     lshw
     smartmontools
     parted
+    wineWowPackages.stable
+    winetricks
     hdparm
   ];
 }

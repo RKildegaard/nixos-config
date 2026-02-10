@@ -4,6 +4,7 @@ let
     curl
     wget
     jq
+    gum
     ripgrep
     fd
     bat
@@ -38,6 +39,9 @@ let
     spotify
     gnome-control-center
     gnome-bluetooth
+    discord
+    drawio
+    surfer
   ];
   audioTools = with pkgs; [
     easyeffects

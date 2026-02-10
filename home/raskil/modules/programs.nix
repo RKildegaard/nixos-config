@@ -5,6 +5,7 @@ let
   thermalScript = ../files/bin/waybar-thermal;
   lockScript = ../files/bin/lockscreen;
   gnomeHubScript = ../files/bin/gnome-control-hub;
+  templateMenuScript = ../files/bin/template-menu;
   system = pkgs.stdenv.hostPlatform.system;
 in
 {
@@ -105,6 +106,17 @@ in
       name = "gnome-control-hub";
       runtimeInputs = [ pkgs.gnome-control-center ];
       text = builtins.readFile gnomeHubScript;
+    })
+    (pkgs.writeShellApplication {
+      name = "template-menu";
+      runtimeInputs = [
+        pkgs.bashInteractive
+        pkgs.coreutils
+        pkgs.gum
+        pkgs.jq
+        pkgs.nix
+      ];
+      text = builtins.readFile templateMenuScript;
     })
     pkgs.hyprlock
   ];

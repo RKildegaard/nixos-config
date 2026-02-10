@@ -59,8 +59,6 @@
         raskilSettings = pkgs.rustPlatform.buildRustPackage {
           pname = "raskil-settings";
           version = "0.1.0";
-          src = ./apps/settings;
-          cargoLock = { lockFile = ./apps/settings/Cargo.lock; };
 
           nativeBuildInputs = [
             pkgs.pkg-config
