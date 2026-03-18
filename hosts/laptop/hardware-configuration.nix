@@ -9,9 +9,10 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "rtsx_pci_sdmmc" ];
+  boot.kernelModules = [ "kvm-intel" "kvmfr" ];
+  boot.extraModulePackages = [ config.boot.kernelPackages.kvmfr ];
+  boot.kernelParams = [ "kvmfr.static_size_mb=64" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/30f5c9ca-f568-4823-89c8-eec3a0a78b82";

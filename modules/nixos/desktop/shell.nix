@@ -1,35 +1,36 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
+
+let
+  hyprlandSession = pkgs.runCommand "hyprland-session-only" {
+    passthru.providedSessions = [ "hyprland" ];
+  } ''
+    mkdir -p "$out/share/wayland-sessions"
+    cp ${config.programs.hyprland.package}/share/wayland-sessions/hyprland.desktop \
+      "$out/share/wayland-sessions/"
+  '';
+in
 
 {
-  # No Xorg display manager; greetd + Wayland only
   services.xserver.enable = false;
 
-  # Hyprland packages + session file
   programs.hyprland = {
     enable = true;
+    withUWSM = false;
     xwayland.enable = true;
   };
 
-  # Portals: prioritize hyprland, then gtk
-  xdg.portal = {
+  programs.dms-shell = {
     enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
-    ];
-    config.common.default = [ "hyprland" "gtk" ];
+    systemd.target = "hyprland-session.target";
   };
 
-  # Input methods, if you need them (commented by default)
-  # i18n.inputMethod = {
-  #   enabled = "fcitx5";
-  #   fcitx5.addons = with pkgs; [ fcitx5-mozc fcitx5-gtk fcitx5-configtool ];
-  # };
+  services.displayManager = {
+    defaultSession = "hyprland";
+    sessionPackages = lib.mkForce [ hyprlandSession ];
+  };
 
-  # Seat management for pure Wayland TTY login flows
   services.seatd.enable = true;
 
-  # Env that only makes sense for Wayland/Hyprland — keep it here instead of HM
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     XDG_SESSION_TYPE = "wayland";
@@ -37,6 +38,5 @@
     QT_QPA_PLATFORM = "wayland";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     MOZ_ENABLE_WAYLAND = "1";
-    WLR_NO_HARDWARE_CURSORS = "1"; # helps some iGPU/NVIDIA combos; remove if not needed
   };
 }

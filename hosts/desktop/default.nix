@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ../common
     ./hardware-configuration.nix
     ../../profiles/workstations/graphical.nix
   ];
@@ -14,6 +15,7 @@
   };
 
   services.tlp.enable = true;
+  services.power-profiles-daemon.enable = false;
 
   system.stateVersion = "25.05";
 }

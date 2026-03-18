@@ -19,6 +19,10 @@
     enableOnBoot = true;
   };
 
+  systemd.tmpfiles.rules = [
+    "d /home/raskil/installers 0755 raskil users - -"
+  ];
+
   programs.git.enable = true;
 
   boot.kernel.sysctl."fs.inotify.max_user_watches" = 1048576;

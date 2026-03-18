@@ -1,16 +1,8 @@
-{ pkgs, ... }:
-let
-  tuigreet = "${pkgs.tuigreet}/bin/tuigreet";
-in {
-  services.greetd = {
+{ ... }:
+{
+  services.displayManager.dms-greeter = {
     enable = true;
-    settings = {
-      default_session = {
-        command = "${tuigreet} --remember --remember-user-session --time --cmd Hyprland";
-        # user = "raskil";
-      };
-    };
+    compositor.name = "hyprland";
+    configHome = "/home/raskil";
   };
-
-  security.pam.services.greetd = { };
 }

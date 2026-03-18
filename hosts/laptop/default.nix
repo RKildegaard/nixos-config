@@ -1,6 +1,7 @@
 { nixos-hardware, ... }:
 {
   imports = [
+    ../common
     ./hardware-configuration.nix
     ./nvidia.nix
     nixos-hardware.nixosModules.dell-precision-5570
@@ -15,6 +16,7 @@
       enable = true;
       device = "nodev";
       efiSupport = true;
+      useOSProber = true;
     };
     efi = {
       canTouchEfiVariables = true;

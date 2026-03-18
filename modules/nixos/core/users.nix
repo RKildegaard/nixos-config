@@ -4,7 +4,7 @@
 
   users.users.raskil = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "input" "docker" "dialout" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" "input" "docker" "dialout" "kvm" "libvirtd" ];
     shell = pkgs.bashInteractive;
   };
 

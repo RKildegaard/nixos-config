@@ -2,79 +2,48 @@
   description = "NixOS multi-host (laptop/desktop) + Home Manager + Hyprland";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }:
+  outputs = { nixpkgs, home-manager, nixos-hardware, ... }:
   let
     lib = nixpkgs.lib;
 
-    # Build a host with the shared module stack
-    mkHost = hostPath: lib.nixosSystem {
+    mkHost = name: lib.nixosSystem {
       system = "x86_64-linux";
 
-      specialArgs = { inherit self nixos-hardware; };
-      
-      modules = [
-        ./modules/nixos
-        hostPath
+      specialArgs = { inherit nixos-hardware; };
 
-        # Optional overlays
+      modules = [
+        ./hosts/${name}
+
         { nixpkgs.overlays = [ (import ./modules/overlays) ]; }
 
-        # Home Manager
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
 
-          # Make 'self' available inside your HM modules (so you can use self.packages.*)
-          home-manager.extraSpecialArgs = { inherit self; };
-
-          home-manager.users.raskil = import ./home/raskil;
+          home-manager.users.raskil = {
+            imports = [
+              ./home/raskil
+              ./home/raskil/hosts/${name}.nix
+            ];
+          };
         }
       ];
     };
 
-    # Build our Rust settings app for each system we care about
-    forAllSystems = f: lib.genAttrs [ "x86_64-linux" ] (system:
-      f (import nixpkgs { inherit system; })
-    );
-
   in {
-    # NixOS machines
     nixosConfigurations = {
-      laptop  = mkHost ./hosts/laptop;
-      desktop = mkHost ./hosts/desktop;
+      laptop = mkHost "laptop";
+      desktop = mkHost "desktop";
     };
-
-    # Packages produced by this flake (Rust GUI app)
-    packages = forAllSystems (pkgs:
-      let
-        raskilSettings = pkgs.rustPlatform.buildRustPackage {
-          pname = "raskil-settings";
-          version = "0.1.0";
-
-          nativeBuildInputs = [
-            pkgs.pkg-config
-            pkgs.wrapGAppsHook4
-          ];
-          buildInputs = [
-            pkgs.gtk4
-            pkgs.libadwaita
-          ];
-
-          RUSTFLAGS = "-C debuginfo=0";
-        };
-      in {
-        raskil-settings = raskilSettings;
-        default = raskilSettings;
-      }
-    );
   };
 }

@@ -5,9 +5,8 @@
     lshw
     smartmontools
     parted
-    wineWowPackages.stable
-    winetricks
     hdparm
+    looking-glass-client
   ];
 }
 
