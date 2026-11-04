@@ -43,7 +43,7 @@
       google-chrome
       nautilus
       onedrive
-      spotify
+      spotifyd
       discord
       drawio
       surfer

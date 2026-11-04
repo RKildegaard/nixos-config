@@ -8,6 +8,14 @@
   in {
     xdg.configFile."hypr/background.jpg".source = ../../rsc/background.jpg;
 
+    # DMS switches Hyprland to Lua and loads this file after its defaults.
+    # Keep personal shortcuts here so they survive DMS-generated config files.
+    xdg.configFile."hypr/dms/binds-user.lua".text = ''
+      -- Personal bindings (loaded after DMS defaults).
+      hl.bind("SUPER + Return", hl.dsp.exec_cmd("foot"))
+      hl.bind("SUPER + D", hl.dsp.exec_cmd("dms ipc call spotlight toggle"))
+    '';
+
     systemd.user.services.wallpaper = {
       Unit = {
         Description = "Desktop wallpaper";

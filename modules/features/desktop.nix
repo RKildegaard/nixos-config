@@ -52,6 +52,10 @@
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
       XDG_SESSION_TYPE = "wayland";
+      # DMS owns the active Hyprland Lua configuration and leaves kb_layout
+      # empty, so make the inherited XKB layout explicit.
+      XKB_DEFAULT_LAYOUT = "dk";
+      XKB_DEFAULT_VARIANT = "";
       GDK_BACKEND = "wayland";
       QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";

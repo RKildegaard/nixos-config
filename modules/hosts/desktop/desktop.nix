@@ -6,9 +6,16 @@
   };
 
   flake.modules.nixos.desktopHost = {
+    pkgs,
+    ...
+  }: {
     nixpkgs.hostPlatform = "x86_64-linux";
     networking.hostName = "desktop";
     system.stateVersion = "25.05";
+
+    # The AMD GPU drives the physical DP/HDMI connectors on this machine.
+    # Without its firmware, amdgpu aborts during initialization.
+    hardware.firmware = [pkgs.linux-firmware];
 
     imports = with inputs.self.modules.nixos; [
       base
@@ -33,11 +40,21 @@
       }
     ];
 
+    security.pki.certificateFiles = [
+      (builtins.path {
+        path = /etc/nixos/rsc/cfcs.pem;
+        name = "cfcs.pem";
+      })
+    ];
+
     boot.loader.grub = {
       enable = true;
       device = "nodev";
+      efiSupport = true;
       useOSProber = true;
     };
+
+    boot.loader.efi.canTouchEfiVariables = true;
 
     services = {
       tlp.enable = true;
