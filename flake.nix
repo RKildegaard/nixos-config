@@ -7,6 +7,16 @@
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    dfiles = {
+      url = "github:duxlabs-dev/dux-files";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    quickCapture = {
+      url = "github:hthienloc/dms-plugins";
+      flake = false;
+    };
+
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     flake-parts.url = "github:hercules-ci/flake-parts";

@@ -1,5 +1,12 @@
-{
+{inputs, ...}: {
   flake.modules.homeManager.packages = {pkgs, ...}: let
+    kicadWithTkinter = pkgs.kicad.overrideAttrs (old: {
+      installPhase = builtins.replaceStrings
+        [ ''--set PYTHONPATH "$program_PYTHONPATH"'' ]
+        [ ''--set PYTHONPATH "$program_PYTHONPATH:${pkgs.python314Packages.tkinter}/${pkgs.python314.sitePackages}"'' ]
+        old.installPhase;
+    });
+
     cliTools = with pkgs; [
       curl
       wget
@@ -27,39 +34,48 @@
 
     waylandTools = with pkgs; [
       wl-clipboard
-      grim
-      slurp
-      swappy
       wtype
-      brightnessctl
       playerctl
-      pulseaudio
-      hypridle
+    ];
+
+    quickCaptureTools = with pkgs; [
+      gpu-screen-recorder
+      wf-recorder
+      ffmpeg
+      imagemagick
+      img2pdf
+      tesseract
+      zbar
+      procps
     ];
 
     desktopApps = with pkgs; [
       signal-desktop
       firefox
       google-chrome
-      nautilus
       onedrive
-      spotifyd
+      spotify
       discord
+      keepassxc
       drawio
       surfer
-      kicad
+      kicadWithTkinter
       gthumb
       fritzing
       mixxx
       ltspice
+      inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.artcraft-launcher
     ];
 
-    audioTools = with pkgs; [
-      easyeffects
+   requirements = with pkgs; [
+      openssl
+   ];
+
+    audioPlugins = with pkgs; [
       lsp-plugins
       calf
     ];
   in {
-    home.packages = cliTools ++ waylandTools ++ desktopApps ++ audioTools;
+    home.packages = cliTools ++ waylandTools ++ quickCaptureTools ++ desktopApps ++ requirements ++ audioPlugins;
   };
 }

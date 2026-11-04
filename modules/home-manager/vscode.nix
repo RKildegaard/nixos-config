@@ -14,8 +14,10 @@
       mutableExtensionsDir = true;
       package = pkgs.vscode;
       profiles.default = {
+        mutableUserSettings = true;
         extensions = with pkgs.vscode-extensions; [
           platformio.platformio-vscode-ide
+          ms-vscode.cpptools
           esbenp.prettier-vscode
 	];
         userSettings = {
@@ -24,7 +26,7 @@
             "**/.bloop" = true;
             "**/.metals" = true;
           };
- 	  "workbench.colorTheme" = "Default Dark Modern";
+	  "workbench.colorTheme" = "Dark Modern";
 	  "editor.defaultFormatter" = "esbenp.prettier-vscode";
           "git.confirmSync" = false;
           "github.copilot.enable" = {

@@ -1,11 +1,20 @@
 {
   flake.modules.homeManager.xdg = {
+    programs.dux-files = {
+      enable = true;
+      portal = {
+        enable = true;
+        preferred = true;
+        desktop = "hyprland";
+      };
+    };
+
     xdg.mimeApps = {
       enable = true;
       associations.added = {};
       defaultApplications = {
-        "inode/directory" = ["org.gnome.Nautilus.desktop"];
-        "application/x-gnome-saved-search" = ["org.gnome.Nautilus.desktop"];
+        "inode/directory" = ["dev.duxlabs.files.desktop"];
+        "application/x-gnome-saved-search" = ["dev.duxlabs.files.desktop"];
       };
     };
 

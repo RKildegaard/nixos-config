@@ -16,6 +16,7 @@
     # The AMD GPU drives the physical DP/HDMI connectors on this machine.
     # Without its firmware, amdgpu aborts during initialization.
     hardware.firmware = [pkgs.linux-firmware];
+    hardware.graphics.enable = true;    
 
     imports = with inputs.self.modules.nixos; [
       base
@@ -40,12 +41,6 @@
       }
     ];
 
-    security.pki.certificateFiles = [
-      (builtins.path {
-        path = /etc/nixos/rsc/cfcs.pem;
-        name = "cfcs.pem";
-      })
-    ];
 
     boot.loader.grub = {
       enable = true;

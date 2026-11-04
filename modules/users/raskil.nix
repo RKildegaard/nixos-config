@@ -19,6 +19,8 @@ in {
         "input"
         "docker"
         "dialout"
+        "libvirtd"
+        "kvm"
       ];
     };
 
@@ -46,6 +48,7 @@ in {
       matlab
       hyprland
       services
+      inputs.dfiles.homeModules.dux-files
     ];
   };
 }

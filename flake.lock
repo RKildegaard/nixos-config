@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "dank-qml-common": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793739121,
+        "narHash": "sha256-tuZawVduVTBkUo2e5SrmA5tGEVEHZiIPqbOUwA007H4=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "rev": "69971fe7203deaca031d04c434b3fcc016a2fb9e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "type": "github"
+      }
+    },
+    "dfiles": {
+      "inputs": {
+        "dank-qml-common": "dank-qml-common",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793760573,
+        "narHash": "sha256-ubBDXv4KCMcZFSyw3sO999iLGCRdERc+qEbkHION+xo=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-files",
+        "rev": "ed5e0baaa5176d39d48c44a1a0619294151b2620",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "repo": "dux-files",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -25,11 +62,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790128814,
-        "narHash": "sha256-6Gm9q+wW3E4Ey4F6wEbJAwaMsEK6hvCYfTW7yY64ZfA=",
+        "lastModified": 1793757180,
+        "narHash": "sha256-gyV7AtCwLnOImcrfSETP4J3Ie96bz19DY47B7m7Y3HM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "0b2f1129177f70c5f0f5d88bb53c49ca47d0bfc0",
+        "rev": "b787c48e2ec57a9d098f5c2721882a3bc1e16f97",
         "type": "github"
       },
       "original": {
@@ -102,11 +139,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1790046670,
-        "narHash": "sha256-MYiI+CzL0tuWgRPjGsKCDHqYs2T3OzMlMQWOYWG0qso=",
+        "lastModified": 1793540411,
+        "narHash": "sha256-fiPJ88izTVucjeo2EQ3jk4aWmLg03I1D4vxnX2QjEgE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6774f7bc253789b113a4f39285dc0fa100abeacc",
+        "rev": "0bb2eedc20e4739f29e8045034f2828ad7054f8f",
         "type": "github"
       },
       "original": {
@@ -116,13 +153,31 @@
         "type": "github"
       }
     },
+    "quickCapture": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793754509,
+        "narHash": "sha256-eOpmSLDguzS4xNwvTdy070RsG7n+VvSdGqTYrc/Dpus=",
+        "owner": "hthienloc",
+        "repo": "dms-plugins",
+        "rev": "b8ec2719ad2fc4d09075882e957d16ca9387f398",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hthienloc",
+        "repo": "dms-plugins",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
+        "dfiles": "dfiles",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
+        "quickCapture": "quickCapture",
         "systems": "systems"
       }
     },
